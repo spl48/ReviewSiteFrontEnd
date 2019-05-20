@@ -132,9 +132,9 @@
                         <v-spacer></v-spacer>
                         <div v-if="card.meanStar !== null">
                           <h2 style="text-align:center;">Average Star Rating</h2>
-                          <v-rating color="primary" v-model="card.meanStar" half-increments readonly></v-rating>
+                          <v-rating large dense color="primary" v-model="card.meanStar" half-increments readonly></v-rating>
                           <h2 style="text-align:center;">Average Cost Rating</h2>
-                          <v-rating color="primary" v-model="card.modeCost" full-icon="attach_money" empty-icon="attach_money" half-icon="attach_money" half-increments readonly></v-rating>
+                          <v-rating large dense color="primary" v-model="card.modeCost" full-icon="attach_money" empty-icon="attach_money" half-icon="attach_money" half-increments readonly></v-rating>
                         </div>
                         <div v-else>
                           <h2 style="text-align:center;">No Reviews</h2>
@@ -207,6 +207,16 @@
             <!--</template>-->
           <!--</v-data-iterator>-->
           <v-flex xs2>
+            <v-btn
+              absolute
+              fab
+              centre
+              hover
+              color="accent"
+              to="/add-venue"
+            >
+              <v-icon>add</v-icon>
+            </v-btn>
           </v-flex>
         </v-layout>
         <v-layout justify-start align-centre>

@@ -46,6 +46,10 @@
         incorrect: false
       }
     },
+    mounted: function () {
+      if(sessionStorage.getItem("authTok") !== null) this.$router.push('/venues');
+      console.log(sessionStorage.getItem("authTok"));
+    },
     methods: {
       login: function (usermail, password) {
         this . $http . post ( 'http://localhost:4941/api/v1/users/login', {
