@@ -1,26 +1,29 @@
-<template>
+<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <div id="topnav">
       <v-toolbar color="primary">
         <img src="./assets/reviewlogo.png" alt="" style="cursor: pointer" @click="toVenues">
         <v-spacer></v-spacer>
         <v-toolbar-items>
-          <v-btn v-text="loginout" v-on:click="loginOrOut" flat></v-btn>
+
+          <!--<v-btn  v-text="loginout" v-on:click="loginOrOut" flat></v-btn>-->
           <!--<UserDetails></UserDetails>-->
 
 
           <v-menu
             v-model="menu"
             :close-on-content-click="false"
-            :nudge-width="400"
+            :nudge-width="300"
             offset-x
           >
             <template v-slot:activator="{ on }">
               <v-btn
-                color="indigo"
-                dark
+                color="primary"
                 v-on="on"
+                icon
               >
-                Profile
+                <v-avatar color="accent" size="40">
+                  <v-img :src="getProfilePic()" v-on:error="imgError"></v-img>
+                </v-avatar>
               </v-btn>
             </template>
 
@@ -135,7 +138,7 @@
         if (this.userId !== null) this.imgErr = true;
       },
       toVenues: function () {
-        this.$router.push('venues');
+        this.$router.push("/venues");
       }
     }
   };

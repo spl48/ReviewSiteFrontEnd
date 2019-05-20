@@ -3,6 +3,7 @@ import Home from './Home.vue'
 import Login from "./Login"
 import Register from "./Register"
 import Venues from './Venues.vue'
+import Venue from './Venue'
 import App from './App.vue'
 import EditUser from './EditUser'
 import Vuetify from 'vuetify'
@@ -45,6 +46,10 @@ const routes = [
   {
     path: "/edit-user",
     component: EditUser
+  },
+  {
+    path: "/venues/:id",
+    component: Venue
   }
 ];
 

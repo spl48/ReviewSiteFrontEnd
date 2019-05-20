@@ -107,7 +107,7 @@
                     v-bind="{ [`xs${card.flex}`]: true }"
                   >
                     <v-hover>
-                    <v-card  style="cursor: pointer" slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`" class="mx-auto" @click="toVenue()">
+                    <v-card  style="cursor: pointer" slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`" class="mx-auto" @click="toVenue(card.venueId)">
                       <v-img
                         :src="card.src"
                         height="200px"
@@ -130,11 +130,15 @@
 
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <div>
-                          Star
+                        <div v-if="card.meanStar !== null">
+                          <h2 style="text-align:center;">Average Star Rating</h2>
                           <v-rating color="primary" v-model="card.meanStar" half-increments readonly></v-rating>
-                          Cost
+                          <h2 style="text-align:center;">Average Cost Rating</h2>
                           <v-rating color="primary" v-model="card.modeCost" full-icon="attach_money" empty-icon="attach_money" half-icon="attach_money" half-increments readonly></v-rating>
+                        </div>
+                        <div v-else>
+                          <h2 style="text-align:center;">No Reviews</h2>
+                          <h2 style="text-align:center;">No Reviews</h2>
                         </div>
                         <v-spacer></v-spacer>
                       </v-card-actions>
@@ -279,6 +283,7 @@
                 modeCost: response.data[i]['modeCostRating'],
                 city: response.data[i]['city'],
                 distance: response.data[i]['distance'],
+                venueId: response.data[i]['venueId'],
                 src: this.getPrimaryPhoto(response.data[i]['venueId'], response.data[i]['primaryPhoto'], response.data[i]['categoryId'])[0],
                 contain: this.getPrimaryPhoto(response.data[i]['venueId'], response.data[i]['primaryPhoto'], response.data[i]['categoryId'])[1],
                 flex: flex
@@ -354,8 +359,8 @@
           this.changePage("refresh");
         }
       },
-      toVenue: function () {
-        console.log("yoza");
+      toVenue: function (venueId) {
+        this.$router.push(/venues/ + venueId);
       },
       getPrimaryPhoto: function (venueId, filename, venueType) {
         if (filename !== undefined && filename !== null && filename !== "") {
