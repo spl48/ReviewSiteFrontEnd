@@ -78,6 +78,7 @@
               </v-card-text>
 
               <v-card-actions>
+                <v-btn color="accent" v-show="isAdmin">Edit</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -101,6 +102,7 @@
               </v-card-title>
             </v-card>
             <v-container fluid grid-list-md>
+              <div v-show="reviews.length > 0">
               <v-card color="accent">
                 <h2 style="text-align:center;">Recent Reviews</h2>
               </v-card>
@@ -147,6 +149,7 @@
                   </v-flex>
                 </template>
               </v-data-iterator>
+              </div>
             </v-container>
           </v-flex>
         </v-layout>
@@ -159,6 +162,7 @@
   export  default {
     data() {
       return {
+        isAdmin: false,
         error: "",
         errorFlag: false,
         show: false,
@@ -187,6 +191,7 @@
           .then(function(response) {
             this.photos = response.data['photos'];
             this.venueInfo = response.data;
+            if (this.venueInfo['admin']['userId'] == sessionStorage.getItem("userId")) this.isAdmin = true;
           } , function (error) {
             this.error = error;
             this.errorFlag = true;
@@ -213,7 +218,6 @@
             for (var i=0; i<response.data.length; i++) {
               this.reviews.push(response.data[i]);
             }
-            console.log(this.reviews);
           }, function (error) {
             this.error = error;
             this.errorFlag = true;

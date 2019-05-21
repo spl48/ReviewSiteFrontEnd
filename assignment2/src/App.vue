@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <v-app>
-    <Navigation v-if='this.$route.path !== "login" || this.$route.path !== "register"'></Navigation>
+    <Navigation></Navigation>
       <v-content>
     <router-view></router-view>
       </v-content>

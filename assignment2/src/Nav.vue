@@ -96,8 +96,6 @@
         if (authTok !== null) {
           this.$http.post("http://localhost:4941/api/v1/users/logout", {headers: {"X-Authorization": authTok}})
             .then(function(response) {
-              console.log(authTok);
-              console.log(response);
               sessionStorage.removeItem("authTok");
               sessionStorage.removeItem("userId");
           } , function(error) {

@@ -6,12 +6,13 @@ import Venues from './Venues.vue'
 import Venue from './Venue'
 import App from './App.vue'
 import EditUser from './EditUser'
+import AddVenue from './AddVenue'
 import Vuetify from 'vuetify'
 Vue.use(Vuetify, {
   theme: {
-    primary: '#4392da',
+    primary: '#f3884a',
     secondary: '#000000',
-    accent: '#e9e61c'
+    accent: '#4392da'
   }
 });
 import 'vuetify/dist/vuetify.min.css' // Ensure you are using css-loader
@@ -50,6 +51,10 @@ const routes = [
   {
     path: "/venues/:id",
     component: Venue
+  },
+  {
+    path: "/add-venue",
+    component: AddVenue
   }
 ];
 
