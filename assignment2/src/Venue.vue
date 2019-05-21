@@ -11,6 +11,11 @@
         width="275"
       >
         <v-card style="text-align:center;">
+          <v-card-text>
+            <v-avatar color="accent" size="100px">
+              <v-img :src="getProfilePic(clickedOnUserId)" v-on:error="imgError"></v-img>
+            </v-avatar>
+          </v-card-text>
           <v-card-text
             class="subheading"
           >
@@ -324,7 +329,7 @@
         reviewToSubmit: {
           starRating: 1,
           costRating: 0,
-          reviewBody: ""
+          reviewBody: "",
         },
         valid: false,
         valid2: false,
@@ -338,7 +343,9 @@
         upload: false,
         description: null,
         makePrimary: false,
-        primaryPopUp: false
+        primaryPopUp: false,
+        imgError: false,
+        clickedOnUserId: null
       }
     },
     mounted: function() {
@@ -399,6 +406,7 @@
         this.$http.get('http://localhost:4941/api/v1/users/' + userId)
           .then(function (response) {
             this.clickedOnUser = response.data;
+            this.clickedOnUserId = userId;
             this.dialog = true;
           }, function (error) {
             this.error = error;
@@ -484,6 +492,12 @@
           this.error = error;
           this.errorFlag = true;
         }
+      },
+      getProfilePic: function (userId) {
+        if (!this.imgErr) {
+          return "http://localhost:4941/api/v1/users/" + userId + "/photo"
+        }
+        return require('./assets/defaultProfilePic.png');
       }
     }
   }

@@ -51,7 +51,7 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn v-if="user['userId'] != null" flat color="accent" v-on:click="changePhoto = true">Change Picture</v-btn>
+                <v-btn v-if="user['userId'] != null" flat color="accent" v-on:click="changePhoto = true">Change/Delete Picture</v-btn>
                 <v-btn v-if="user['userId'] != null" flat to="/edit-user" flat color="accent">Edit User</v-btn>
                 <v-btn flat @click="loginOrOut" v-text="loginout" flat color="accent"></v-btn>
                 <v-spacer></v-spacer>
@@ -62,13 +62,17 @@
           <v-dialog v-model="changePhoto" width="420px">
             <v-card>
               <v-card-text style="text-align:center; color:#f3884a; font-size:20px;">
-                Select a New Profile Picture
+                Select New Profile Picture
               </v-card-text>
-              <v-divider></v-divider>
                 <v-card-actions>
                   <input type="file" id="file" ref="file" v-on:change="handleFileUpload()">
                   <v-btn :disabled="file == '' || file == null" color="primary" v-on:click="submitFile()">Upload Photo</v-btn>
                 </v-card-actions>
+              <v-divider></v-divider>
+              <v-card-text style="text-align:center; color:#f3884a; font-size:20px;">Delete Current Picture</v-card-text>
+              <v-card-actions>
+                <v-btn block color="primary" v-on:click="deleteProfilePicture">Delete</v-btn>
+              </v-card-actions>
             </v-card>
           </v-dialog>
 
@@ -179,12 +183,21 @@
           ).then(function(response){
             document.location.reload();
           }), function (error) {
-            console.log(error);
             this.error = error;
             this.errorFlag = true;
           }
         } else {
           alert("File size too big")
+        }
+      },
+      deleteProfilePicture: function () {
+        let authTok = sessionStorage.getItem("authTok");
+        this.$http.delete( 'http://localhost:4941/api/v1/users/' + this.user['userId'] + '/photo', {headers: {"X-Authorization": authTok}})
+          .then(function (response) {
+            document.location.reload();
+          }), function (error) {
+            this.error = error;
+            this.errorFlag = true;
         }
       }
     }
