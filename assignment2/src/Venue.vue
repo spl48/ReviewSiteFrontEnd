@@ -37,6 +37,26 @@
         </v-card>
       </v-dialog>
 
+      <v-dialog v-model="upload" width="400px">
+        <v-card>
+          <v-card-text class="subheading">
+            Upload a Photo For Your Venue
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-form v-model="valid2">
+          <v-card-actions>
+            <v-text-field v-model="description"  name="description" label="Photo description" type="text" :rules="requiredRule"></v-text-field>
+            <v-checkbox v-model="makePrimary" label="Make Primary"></v-checkbox>
+          </v-card-actions>
+          <v-card-actions>
+              <input type="file" id="file" ref="file" v-on:change="handleFileUpload()">
+
+            <v-btn :disabled="!valid2 || file == '' || file == null" color="blue darken-1" v-on:click="submitFile()">Upload Photo</v-btn>
+          </v-card-actions>
+          </v-form>
+        </v-card>
+      </v-dialog>
+
       <v-dialog v-model="reviewPopup" max-width="550px">
         <v-card>
           <v-card-title>
@@ -73,8 +93,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click="reviewPopup = false">Cancel</v-btn>
-            <v-btn :disabled="!valid" color="blue darken-1" flat @click="reviewPopup = false, postReview()">Save</v-btn>
+            <v-btn color="primary" flat @click="reviewPopup = false">Cancel</v-btn>
+            <v-btn :disabled="!valid" color="primary" flat @click="reviewPopup = false, postReview()">Save</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -129,6 +149,8 @@
 
               <v-card-actions>
                 <v-btn color="accent" v-show="isAdmin" :to="'/edit-venue/' + venueId">Edit</v-btn>
+                <v-btn color="accent" v-show="isAdmin" v-on:click="upload = true">Upload Photo</v-btn>
+
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -216,6 +238,8 @@
 </template>
 
 <script>
+  import {AxiosInstance as axios} from "axios";
+
   export  default {
     data() {
       return {
@@ -245,10 +269,16 @@
           reviewBody: ""
         },
         valid: false,
+        valid2: false,
         requiredRule: [
           v => !!v || 'Required',
         ],
-        userId: sessionStorage.getItem("userId")
+        userId: sessionStorage.getItem("userId"),
+        imageToUpload: null,
+        file: '',
+        upload: false,
+        description: null,
+        makePrimary: false
       }
     },
     mounted: function() {
@@ -331,6 +361,31 @@
             this.error = error;
             this.errorFlag = true;
           });
+      },
+      handleFileUpload() {
+        this.file = this.$refs.file.files[0];
+      },
+      submitFile() {
+        let authTok = sessionStorage.getItem("authTok");
+        let formData = new FormData();
+        formData.append('photo', this.file);
+        formData.append('description', this.description);
+        formData.append('makePrimary', this.makePrimary);
+        this.$http.post( 'http://localhost:4941/api/v1/venues/' + this.venueId + '/photos',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              "X-Authorization": authTok
+            }
+          }
+        ).then(function(response){
+          document.location.reload();
+        }), function (error) {
+          console.log(error);
+          this.error = error;
+          this.errorFlag = true;
+        }
       }
     }
   }
