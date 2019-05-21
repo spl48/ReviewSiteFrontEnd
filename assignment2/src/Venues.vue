@@ -135,7 +135,7 @@
                 <v-layout row wrap>
                   <v-flex
                     v-for="card in cards"
-                    :key="card.title"
+                    :key="card.venueId"
                     v-bind="{ [`xs${card.flex}`]: true }"
                   >
                     <v-hover>
@@ -154,7 +154,7 @@
                             <v-flex xs12 align-end flexbox>
                               <span class="headline white black--text" v-text="card.title"></span>
                               <div><span class="subheading white black--text" v-text="card.categoryName"></span></div>
-                              <div><span v-if="card.distance !== undefined" class="subheading white black--text" v-text="card.distance.toFixed(2) + ' km'"></span></div>
+                              <div v-if="card.distance !== undefined"><span class="subheading white black--text" v-text="card.distance.toFixed(2) + ' km'"></span></div>
                             </v-flex>
                           </v-layout>
                         </v-container>
