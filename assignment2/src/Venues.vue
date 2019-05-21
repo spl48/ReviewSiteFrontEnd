@@ -78,7 +78,9 @@
 
               <v-select
                 v-model="maxCostRating"
-                :items="[1, 2, 3, 4]"
+                :items="[{a:'FREE', b:0}, {a:'$', b:1}, {a:'$$', b:2}, {a:'$$$', b:3}, {a:'$$$$', b:4}]"
+                item-text="a"
+                item-value="b"
                 label="Maximum Cost Rating"
                 @change="changePage('first'), getVenues()"
                 clearable>
@@ -164,7 +166,7 @@
                         <v-spacer></v-spacer>
                         <div v-if="card.meanStar !== null">
                           <h2 style="text-align:center;">Average Star Rating</h2>
-                          <v-rating large dense color="primary" v-model="card.meanStar" half-increments readonly></v-rating>
+                          <v-rating large  color="primary" v-model="card.meanStar" half-increments readonly></v-rating>
                           <h2 style="text-align:center;">Most Common Cost Rating</h2>
                           <!--<v-rating large dense color="primary" v-model="card.modeCost" full-icon="attach_money" empty-icon="attach_money" half-icon="attach_money" half-increments readonly></v-rating>-->
                           <h2 style="text-align:center; color:#f3884a; font-size:25px;" v-text="'$'.repeat(card.modeCost) || 'Free'"></h2>
