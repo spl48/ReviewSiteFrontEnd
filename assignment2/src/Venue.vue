@@ -203,15 +203,11 @@
                   </v-btn>
                   <v-card-text class="text-xs-right" v-text="'Date Added: ' + venueInfo['dateAdded'].slice(0, 10)"></v-card-text>
                 </div>
-                <!--<v-slide-y-transition>-->
-                  <!--<v-card-text v-show="show" v-text="venueInfo['longDescription']">-->
-                  <!--</v-card-text>-->
-                <!--</v-slide-y-transition>-->
               </v-card-text>
 
               <v-card-actions>
-                <v-btn color="accent" v-show="isAdmin" :to="'/edit-venue/' + venueId">Edit</v-btn>
-                <v-btn color="accent" v-show="isAdmin" v-on:click="upload = true">Upload Photo</v-btn>
+                <v-btn color="accent" v-show="isAdmin" :to="'/edit-venue/' + venueId">Edit Venue Info</v-btn>
+                <v-btn color="accent" v-show="isAdmin" v-on:click="upload = true">Upload Venue Photo</v-btn>
                 <v-btn color="accent" v-show="isAdmin && photos.length > 0" v-on:click="deletePopUp = true">Delete a Photo</v-btn>
                 <v-btn color="accent" v-show="isAdmin && photos.length > 0" v-on:click="primaryPopUp = true">Change Primary Photo</v-btn>
 

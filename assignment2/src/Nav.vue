@@ -53,7 +53,12 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn v-if="user['userId'] != null" flat color="accent" v-on:click="changePhoto = true">Change/Delete Picture</v-btn>
+                <div v-if="!imgErr">
+                  <v-btn v-if="user['userId'] != null" flat color="accent" v-on:click="changePhoto = true">Change/Delete Picture</v-btn>
+                </div>
+                <div v-else>
+                  <v-btn v-if="user['userId'] != null" flat color="accent" v-on:click="changePhoto = true">Upload Picture</v-btn>
+                </div>
                 <v-btn v-if="user['userId'] != null" flat to="/edit-user" flat color="accent">Edit User</v-btn>
                 <v-btn flat @click="loginOrOut" v-text="loginout" flat color="accent"></v-btn>
                 <v-spacer></v-spacer>
@@ -70,10 +75,10 @@
                   <input type="file" id="file" ref="file" v-on:change="handleFileUpload()">
                   <v-btn :disabled="file == '' || file == null" color="primary" v-on:click="submitFile()">Upload Photo</v-btn>
                 </v-card-actions>
-              <v-divider></v-divider>
-              <v-card-text style="text-align:center; color:#f3884a; font-size:20px;">Delete Current Picture</v-card-text>
+              <v-divider v-if="!imgErr"></v-divider>
+              <v-card-text v-if="!imgErr" style="text-align:center; color:#f3884a; font-size:20px;">Delete Current Picture</v-card-text>
               <v-card-actions>
-                <v-btn block color="primary" v-on:click="deleteProfilePicture">Delete</v-btn>
+                <v-btn v-if="!imgErr" block color="primary" v-on:click="deleteProfilePicture">Delete</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -189,7 +194,7 @@
             this.errorFlag = true;
           }
         } else {
-          alert("File size too big")
+          alert("File size too big or wrong file type (only allowed .png and .jpeg")
         }
       },
       deleteProfilePicture: function () {
