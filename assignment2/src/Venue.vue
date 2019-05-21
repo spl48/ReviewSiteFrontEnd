@@ -37,7 +37,7 @@
         </v-card>
       </v-dialog>
 
-      <v-dialog v-model="upload" width="400px">
+      <v-dialog v-model="upload" width="420px">
         <v-card>
           <v-card-text style="text-align:center; color:#f3884a; font-size:20px;">
             Upload a Photo For Your Venue
@@ -60,7 +60,7 @@
       <v-dialog v-model="deletePopUp" width="600px">
         <v-card>
           <v-card-text style="text-align:center; color:#f3884a; font-size:40px;">
-            Click a photo to delete
+            Click a Photo to Delete
           </v-card-text>
           <v-divider></v-divider>
           <v-card-text>
@@ -88,7 +88,7 @@
       <v-dialog v-model="primaryPopUp" width="600px">
         <v-card>
           <v-card-text style="text-align:center; color:#f3884a; font-size:40px;">
-            Click a photo to make primary
+            Click a Photo to Make Primary
           </v-card-text>
           <v-divider></v-divider>
           <v-card-text>
@@ -432,7 +432,7 @@
         formData.append('description', this.description);
         formData.append('makePrimary', this.makePrimary);
         console.log(this.file.size);
-        if (this.file.size <= 20000000) {
+        if (this.file.size <= 20000000 && (this.file.type == "image/png" || this.file.type == "image/jpeg")) {
           this.$http.post( 'http://localhost:4941/api/v1/venues/' + this.venueId + '/photos',
             formData,
             {
@@ -449,7 +449,7 @@
             this.errorFlag = true;
           }
         } else {
-          alert("File size too big")
+          alert("File size too big or incorrect type (only allowed .png or .jpeg)")
         }
 
       },

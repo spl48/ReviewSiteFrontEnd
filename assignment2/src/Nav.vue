@@ -12,13 +12,11 @@
           <template v-if="user['userId'] != null">
             <v-btn flat color="secondary" to="/add-venue">Add Venue</v-btn>
           </template>
-          <!--<UserDetails></UserDetails>-->
-
 
           <v-menu
             v-model="menu"
             :close-on-content-click="false"
-            :nudge-width="300"
+            :nudge-width="400"
             offset-x
           >
             <template v-slot:activator="{ on }">
@@ -37,7 +35,9 @@
               <v-list>
                 <v-list-tile avatar>
                   <v-list-tile-avatar size="80px">
-                    <v-img :src="getProfilePic()" v-on:error="imgError"></v-img>
+                    <template v-if="user['userId'] != null"><v-img :src="getProfilePic()" v-on:error="imgError" v-on:click="changePhoto = true" style="cursor: pointer"></v-img></template>
+                    <template v-else><v-img :src="getProfilePic()" v-on:error="imgError"></v-img></template>
+
                   </v-list-tile-avatar>
                   <v-list-tile-content>
                     <v-list-tile-title v-text="user.givenName + ' ' + user.familyName"></v-list-tile-title>
@@ -51,12 +51,26 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-
-                <v-btn flat to="/edit-user">Edit User</v-btn>
-                <v-btn flat @click="loginOrOut" v-text="loginout"></v-btn>
+                <v-btn v-if="user['userId'] != null" flat color="accent" v-on:click="changePhoto = true">Change Picture</v-btn>
+                <v-btn v-if="user['userId'] != null" flat to="/edit-user" flat color="accent">Edit User</v-btn>
+                <v-btn flat @click="loginOrOut" v-text="loginout" flat color="accent"></v-btn>
+                <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
           </v-menu>
+
+          <v-dialog v-model="changePhoto" width="420px">
+            <v-card>
+              <v-card-text style="text-align:center; color:#f3884a; font-size:20px;">
+                Select a New Profile Picture
+              </v-card-text>
+              <v-divider></v-divider>
+                <v-card-actions>
+                  <input type="file" id="file" ref="file" v-on:change="handleFileUpload()">
+                  <v-btn :disabled="file == '' || file == null" color="primary" v-on:click="submitFile()">Upload Photo</v-btn>
+                </v-card-actions>
+            </v-card>
+          </v-dialog>
 
         </v-toolbar-items>
       </v-toolbar>
@@ -84,7 +98,9 @@
         menu: false,
         message: false,
         hints: true,
-        imgErr: false
+        imgErr: false,
+        changePhoto: false,
+        file: null
       }
     },
     mounted: function () {
@@ -145,6 +161,31 @@
       },
       reload: function () {
         document.location.reload();
+      },
+      handleFileUpload() {
+        this.file = this.$refs.file.files[0];
+      },
+      submitFile() {
+        let authTok = sessionStorage.getItem("authTok");
+        if (this.file.size <= 20000000 && (this.file.type == "image/png" || this.file.type == "image/jpeg")) {
+          this.$http.put( 'http://localhost:4941/api/v1/users/' + this.user['userId'] + '/photo',
+            this.file,
+            {
+              headers: {
+                "X-Authorization": authTok,
+                'Content-Type': this.file.type
+              }
+            }
+          ).then(function(response){
+            document.location.reload();
+          }), function (error) {
+            console.log(error);
+            this.error = error;
+            this.errorFlag = true;
+          }
+        } else {
+          alert("File size too big")
+        }
       }
     }
   };
