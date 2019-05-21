@@ -298,8 +298,6 @@
 </template>
 
 <script>
-  import {AxiosInstance as axios} from "axios";
-
   export  default {
     data() {
       return {
