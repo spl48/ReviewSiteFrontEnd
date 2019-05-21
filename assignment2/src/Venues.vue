@@ -154,8 +154,8 @@
                         >
                           <v-layout fill-height>
                             <v-flex xs12 align-end flexbox>
-                              <span class="headline white black--text" v-text="card.title"></span>
-                              <div><span class="subheading white black--text" v-text="card.categoryName"></span></div>
+                              <span style="background-color: #f3884a; font-size:30px;" v-text="card.title"></span>
+                              <div><span style="background-color: #f3884a; font-size:18px" v-text="card.categoryName"></span></div>
                               <div v-if="card.distance !== undefined"><span class="subheading white black--text" v-text="card.distance.toFixed(2) + ' km'"></span></div>
                             </v-flex>
                           </v-layout>

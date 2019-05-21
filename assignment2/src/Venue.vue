@@ -186,21 +186,22 @@
 
               <v-card-title primary-title>
                 <div>
-                  <h1 class="headline text-xs-center" v-text="venueInfo['venueName']"></h1>
-                  <h1 class="subheading" v-text="venueInfo['category']['categoryName']"></h1>
+                  <h1 style="font-size:50px;" v-text="venueInfo['venueName']"></h1>
+                  <h1 style="font-size:20px;" v-text="venueInfo['category']['categoryName']"></h1>
                 </div>
               </v-card-title>
+              <v-divider></v-divider>
 
               <v-card-text>
                 <div>
-                  <v-card-text color=blue v-text="'Admin: ' + venueInfo['admin']['username']" v-on:click=""></v-card-text>
-                  <v-card-text v-text="'Address: ' + venueInfo['address'] + ', ' + venueInfo['city']"></v-card-text>
-                  <span v-text="'Description: ' + venueInfo['shortDescription']"></span>
-                  <span v-show="show" v-text="venueInfo['longDescription']"></span>
+                  <v-card-text style="font-size:20px;" v-text="'Admin: ' + venueInfo['admin']['username']" v-on:click=""></v-card-text>
+                  <v-card-text style="font-size:20px;" v-text="'Address: ' + venueInfo['address'] + ', ' + venueInfo['city']"></v-card-text>
+                  <v-card-text style="font-size:20px;" v-text="'Description: ' + venueInfo['shortDescription']"></v-card-text>
+                  <v-card-text style="font-size:20px;" v-show="show" v-text="'Long Description: ' + venueInfo['longDescription']"></v-card-text>
                   <v-btn icon @click="show = !show">
                     <v-icon>{{ show ? 'keyboard_arrow_left' : 'keyboard_arrow_right' }}</v-icon>
                   </v-btn>
-                  <v-card-text class="text-xs-right" v-text="venueInfo['dateAdded'].slice(0, 10)"></v-card-text>
+                  <v-card-text class="text-xs-right" v-text="'Date Added: ' + venueInfo['dateAdded'].slice(0, 10)"></v-card-text>
                 </div>
                 <!--<v-slide-y-transition>-->
                   <!--<v-card-text v-show="show" v-text="venueInfo['longDescription']">-->
@@ -284,7 +285,7 @@
                         </v-layout>
                       </v-card-text>
                       <v-card-text style="text-align:right;">
-                        {{ props.item.timePosted.slice(0, 10) }}
+                        Date Added: {{ props.item.timePosted.slice(0, 10) }}
                       </v-card-text>
                     </v-card>
                   </v-flex>
