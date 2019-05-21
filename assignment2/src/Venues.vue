@@ -166,7 +166,8 @@
                           <h2 style="text-align:center;">Average Star Rating</h2>
                           <v-rating large dense color="primary" v-model="card.meanStar" half-increments readonly></v-rating>
                           <h2 style="text-align:center;">Average Cost Rating</h2>
-                          <v-rating large dense color="primary" v-model="card.modeCost" full-icon="attach_money" empty-icon="attach_money" half-icon="attach_money" half-increments readonly></v-rating>
+                          <!--<v-rating large dense color="primary" v-model="card.modeCost" full-icon="attach_money" empty-icon="attach_money" half-icon="attach_money" half-increments readonly></v-rating>-->
+                          <h2 style="text-align:center; color:#f3884a; font-size:25px;" v-text="'$'.repeat(card.modeCost) || 'Free'"></h2>
                         </div>
                         <div v-else>
                           <h2 style="text-align:center;">No Reviews</h2>
@@ -181,63 +182,6 @@
               </v-container>
             </v-card>
           </v-flex>
-
-
-          <!--<v-data-iterator-->
-            <!--:items="cards"-->
-            <!--:rows-per-page-items=10-->
-             <!--:pagination.sync="pagination"-->
-             <!--content-tag="v-layout"-->
-             <!--row-->
-             <!--wrap>-->
-            <!--<template v-slot:item="card">-->
-              <!--<v-flex md8>-->
-                <!--<v-card>-->
-                  <!--<v-container-->
-                    <!--fluid-->
-                    <!--grid-list-md-->
-                  <!--&gt;-->
-                      <!--<v-flex-->
-                        <!--:key="card.item.title"-->
-                        <!--v-bind="{ [`xs${card.item.flex}`]: true }"-->
-                      <!--&gt;-->
-                        <!--<v-card>-->
-                          <!--<v-img-->
-                            <!--:src="card.item.src"-->
-                            <!--height="200px"-->
-                          <!--&gt;-->
-                            <!--<v-container-->
-                              <!--fill-height-->
-                              <!--fluid-->
-                              <!--pa-2-->
-                            <!--&gt;-->
-                              <!--<v-layout fill-height>-->
-                                <!--<v-flex xs12 align-end flexbox>-->
-                                  <!--<span class="headline white&#45;&#45;text" v-text="card.item.title"></span>-->
-                                  <!--<div><span class="subheading white&#45;&#45;text" v-text="card.item.categoryDescription"></span></div>-->
-                                  <!--<div><span v-if="card.item.distance !== undefined" class="white&#45;&#45;text" v-text="card.item.distance.toFixed(2) + ' km'"></span></div>-->
-                                <!--</v-flex>-->
-                              <!--</v-layout>-->
-                            <!--</v-container>-->
-                          <!--</v-img>-->
-
-                          <!--<v-card-actions>-->
-                            <!--<v-spacer></v-spacer>-->
-                            <!--<div>-->
-                              <!--Star-->
-                              <!--<v-rating color="primary" v-model="card.item.meanStar" half-increments readonly></v-rating>-->
-                              <!--Cost-->
-                              <!--<v-rating color="primary" v-model="card.item.modeCost" full-icon="attach_money" empty-icon="attach_money" half-icon="attach_money" half-increments readonly></v-rating>-->
-                            <!--</div>-->
-                            <!--<v-spacer></v-spacer>-->
-                          <!--</v-card-actions>-->
-                        <!--</v-card>-->
-                      <!--</v-flex>-->
-                  <!--</v-container>-->
-                <!--</v-card>-->
-              <!--</v-flex>-->
-            <!--</template>-->
-          <!--</v-data-iterator>-->
           <v-flex xs2>
           </v-flex>
         </v-layout>

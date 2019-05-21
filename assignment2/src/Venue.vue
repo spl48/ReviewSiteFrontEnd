@@ -1,34 +1,84 @@
 <template>
-  <!--<div>-->
-    <!--Single Venue Page-->
-    <!--<v-layout>-->
-      <!--<v-flex xs12 sm6 offset-sm3>-->
-        <!--<v-card>-->
-          <!--<v-carousel>-->
-            <!--<v-carousel-item-->
-              <!--v-for="(item,i) in items"-->
-              <!--:key="i"-->
-              <!--:src="item.src"-->
-            <!--&gt;</v-carousel-item>-->
-          <!--</v-carousel>-->
-
-          <!--<v-card-title primary-title>-->
-            <!--<div>-->
-              <!--<h3 class="headline mb-0">Kangaroo Valley Safari</h3>-->
-              <!--<div> {{ card_text }} </div>-->
-            <!--</div>-->
-          <!--</v-card-title>-->
-
-          <!--<v-card-actions>-->
-            <!--<v-btn flat color="orange">Share</v-btn>-->
-            <!--<v-btn flat color="orange">Explore</v-btn>-->
-          <!--</v-card-actions>-->
-        <!--</v-card>-->
-      <!--</v-flex>-->
-    <!--</v-layout>-->
-  <!--</div>-->
   <div id="app">
     <v-app id="inspire">
+
+      <v-alert :value=incorrect type="error" dismissible>
+        Your account has already reviewed this venue
+      </v-alert>
+
+      <v-dialog
+        v-model="dialog"
+        width="275"
+      >
+        <v-card style="text-align:center;">
+          <v-card-text
+            class="subheading"
+          >
+            Username: {{ clickedOnUser.username }}
+          </v-card-text>
+          <v-card-text
+            class="subheading">
+            Name: {{ clickedOnUser.givenName }}
+            {{ clickedOnUser.familyName }}
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              flat
+              @click="dialog = false"
+            >
+              Close
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="reviewPopup" max-width="550px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">Review</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-form v-model="valid">
+                <v-layout row>
+                  <v-flex></v-flex>
+                  <v-flex>
+                    <span class="headline">Star Rating</span>
+                  </v-flex>
+                  <v-flex></v-flex>
+                  <v-flex></v-flex>
+                  <v-flex >
+                    <span class="headline">Cost Rating</span>
+                  </v-flex>
+                  <v-flex></v-flex>
+                </v-layout>
+                <v-layout wrap>
+                  <v-flex >
+                    <v-rating v-model="reviewToSubmit.starRating" hover></v-rating>
+                  </v-flex>
+                  <v-flex >
+                    <v-slider v-model="reviewToSubmit.costRating" :tick-labels="['FREE', '$', '$$', '$$$', '$$$$']" max="4" step="1" ticks="always"></v-slider>
+                  </v-flex>
+                  <v-flex xs12>
+                    <v-text-field v-model="reviewToSubmit.reviewBody" label="Review Body" :rules="requiredRule" required></v-text-field>
+                  </v-flex>
+                </v-layout>
+              </v-form>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" flat @click="reviewPopup = false">Cancel</v-btn>
+            <v-btn :disabled="!valid" color="blue darken-1" flat @click="reviewPopup = false, postReview()">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <v-container fluid grid-list-md>
         <v-layout row>
           <v-flex xs12 sm6 offset-sm1>
@@ -64,8 +114,8 @@
                 <div>
                   <v-card-text color=blue v-text="'Admin: ' + venueInfo['admin']['username']" v-on:click=""></v-card-text>
                   <v-card-text v-text="'Address: ' + venueInfo['address'] + ', ' + venueInfo['city']"></v-card-text>
-                  <v-text v-text="'Description: ' + venueInfo['shortDescription']"></v-text>
-                  <v-text v-show="show" v-text="venueInfo['longDescription']"></v-text>
+                  <span v-text="'Description: ' + venueInfo['shortDescription']"></span>
+                  <span v-show="show" v-text="venueInfo['longDescription']"></span>
                   <v-btn icon @click="show = !show">
                     <v-icon>{{ show ? 'keyboard_arrow_left' : 'keyboard_arrow_right' }}</v-icon>
                   </v-btn>
@@ -90,8 +140,9 @@
                   <div v-if="venueRatings.star !== null">
                     <h2 style="text-align:center;">Average Star Rating</h2>
                     <v-rating size="50px" color="primary" v-model="venueRatings.star" half-increments readonly></v-rating>
-                    <h2 style="text-align:center;">Average Cost Rating</h2>
-                    <v-rating size="50px" color="primary" v-model="venueRatings.cost" full-icon="attach_money" empty-icon="attach_money" half-icon="attach_money" half-increments readonly></v-rating>
+                    <h2 style="text-align:center;">Most Common Cost Rating</h2>
+                    <!--<v-rating size="50px" color="primary" v-model="venueRatings.cost" full-icon="attach_money" empty-icon="attach_money" half-icon="attach_money" readonly></v-rating>-->
+                    <h2 style="text-align:center; color:#f3884a; font-size:50px;" size="50px" v-text="'$'.repeat(venueRatings.cost) || 'Free'"></h2>
                   </div>
                   <div v-else>
                     <h2 style="text-align:center;">No Reviews</h2>
@@ -122,9 +173,13 @@
                   >
                     <v-card>
                       <v-card-text>
-                        <h1 colo style="text-align:center;">
-                          {{ props.item.reviewAuthor.username }}
-                        </h1>
+                        <v-layout row>
+                          <v-flex></v-flex>
+                          <v-btn large color="primary" style="text-align:center;" v-on:click="getUser(props.item.reviewAuthor.userId)">
+                            {{ props.item.reviewAuthor.username }}
+                          </v-btn>
+                          <v-flex></v-flex>
+                        </v-layout>
                       </v-card-text>
                       <v-divider></v-divider>
                       <v-card-text style="text-align:center;">
@@ -135,9 +190,10 @@
                           <v-spacer></v-spacer>
                           <div>
                             <h4 style="text-align:center;">Star Rating</h4>
-                            <v-rating color="primary" v-model="props.item.starRating" half-increments readonly></v-rating>
+                            <v-rating size="25px" color="primary" v-model="props.item.starRating" half-increments readonly></v-rating>
                             <h4 style="text-align:center;">Cost Rating</h4>
-                            <v-rating color="primary" v-model="props.item.costRating" full-icon="attach_money" empty-icon="attach_money" half-icon="attach_money" half-increments readonly></v-rating>
+                            <!--<v-rating color="primary" v-model="props.item.costRating" full-icon="attach_money" empty-icon="attach_money" half-icon="attach_money" half-increments readonly></v-rating>-->
+                            <h2 style="text-align:center; color:#f3884a; font-size:25px;" v-text="'$'.repeat(venueRatings.cost) || 'Free'"></h2>
                           </div>
                           <v-spacer></v-spacer>
                         </v-layout>
@@ -150,6 +206,7 @@
                 </template>
               </v-data-iterator>
               </div>
+              <v-btn block color="primary" v-show="userId != null && !isAdmin" v-on:click="reviewPopup=true">Write A Review</v-btn>
             </v-container>
           </v-flex>
         </v-layout>
@@ -162,6 +219,9 @@
   export  default {
     data() {
       return {
+        incorrect: false,
+        dialog: false,
+        reviewPopup: false,
         isAdmin: false,
         error: "",
         errorFlag: false,
@@ -177,7 +237,18 @@
         reviews: [],
         pagination: {
           rowsPerPage: 1
-        }
+        },
+        clickedOnUser: [],
+        reviewToSubmit: {
+          starRating: 1,
+          costRating: 0,
+          reviewBody: ""
+        },
+        valid: false,
+        requiredRule: [
+          v => !!v || 'Required',
+        ],
+        userId: sessionStorage.getItem("userId")
       }
     },
     mounted: function() {
@@ -233,6 +304,33 @@
           case 5: defaultPic = require('./assets/defaultNature.png'); break;
         }
         return defaultPic;
+      },
+      getUser: function (userId) {
+        this.$http.get('http://localhost:4941/api/v1/users/' + userId)
+          .then(function (response) {
+            this.clickedOnUser = response.data;
+            this.dialog = true;
+          }, function (error) {
+            this.error = error;
+            this.errorFlag = true;
+          });
+      },
+      postReview: function () {
+        let authTok = sessionStorage.getItem("authTok");
+        this.$http.post('http://localhost:4941/api/v1/venues/' + this.venueId + '/reviews', {
+          "reviewBody": this.reviewToSubmit.reviewBody,
+          "starRating": this.reviewToSubmit.starRating,
+          "costRating": this.reviewToSubmit.costRating
+        }, {headers: {"X-Authorization": authTok}})
+          .then(function (response) {
+            document.location.reload();
+          }, function (error) {
+            if (error.status === 403) {
+              this.incorrect = true;
+            }
+            this.error = error;
+            this.errorFlag = true;
+          });
       }
     }
   }
