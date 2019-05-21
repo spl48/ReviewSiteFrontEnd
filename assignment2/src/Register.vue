@@ -57,7 +57,8 @@
         ],
         usernameRules: [
           v => !!v || 'Required',
-          v => (v && v.length <= 64) || 'Username must be less than 64 characters'
+          v => (v && v.length <= 64) || 'Username must be less than 64 characters',
+          v => /^[a-zA-Z0-9]*$/.test(v) || 'Username must only contain numbers and letters'
         ],
         emailRules: [
           value => !!value || 'Required',

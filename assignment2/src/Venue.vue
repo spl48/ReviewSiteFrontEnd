@@ -268,7 +268,7 @@
                         </v-layout>
                       </v-card-text>
                       <v-divider></v-divider>
-                      <v-card-text style="text-align:center;">
+                      <v-card-text style="text-align:center; font-size: 20px">
                         {{ props.item.reviewBody }}
                       </v-card-text>
                       <v-card-text>
