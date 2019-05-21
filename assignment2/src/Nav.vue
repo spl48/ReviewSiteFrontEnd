@@ -32,9 +32,10 @@
             </template>
 
             <v-card>
+              <v-card-title>
               <v-list>
                 <v-list-tile avatar>
-                  <v-list-tile-avatar size="80px">
+                  <v-list-tile-avatar size="90px">
                     <template v-if="user['userId'] != null"><v-img :src="getProfilePic()" v-on:error="imgError" v-on:click="changePhoto = true" style="cursor: pointer"></v-img></template>
                     <template v-else><v-img :src="getProfilePic()" v-on:error="imgError"></v-img></template>
 
@@ -47,6 +48,7 @@
                 </v-list-tile>
               </v-list>
               <v-list></v-list>
+              </v-card-title>
               <v-divider></v-divider>
 
               <v-card-actions>

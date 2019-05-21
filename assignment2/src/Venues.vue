@@ -86,7 +86,7 @@
 
               <v-select
                 v-model="minStarRating"
-                :items="[1, 2, 3, 4]"
+                :items="[1, 2, 3, 4, 5]"
                 label="Minimum Star Rating"
                 @change="changePage('first'), getVenues()"
                 clearable>
@@ -165,7 +165,7 @@
                         <div v-if="card.meanStar !== null">
                           <h2 style="text-align:center;">Average Star Rating</h2>
                           <v-rating large dense color="primary" v-model="card.meanStar" half-increments readonly></v-rating>
-                          <h2 style="text-align:center;">Average Cost Rating</h2>
+                          <h2 style="text-align:center;">Most Common Cost Rating</h2>
                           <!--<v-rating large dense color="primary" v-model="card.modeCost" full-icon="attach_money" empty-icon="attach_money" half-icon="attach_money" half-increments readonly></v-rating>-->
                           <h2 style="text-align:center; color:#f3884a; font-size:25px;" v-text="'$'.repeat(card.modeCost) || 'Free'"></h2>
                         </div>
@@ -185,18 +185,20 @@
           <v-flex xs2>
           </v-flex>
         </v-layout>
-        <v-layout justify-start align-centre>
+        <v-layout row>
+          <v-flex></v-flex>
           <v-btn
             color="primary"
             :disabled="firstPage"
             @click="changePage('back')"
           ><v-icon>arrow_back</v-icon>Previous Page</v-btn>
+          <span style="color:#f3884a; font-size:32px;" v-text="(startIndex+1) + '-' + (startIndex+cards.length)"></span>
           <v-btn
             color="primary"
             :disabled="lastPage"
             @click="changePage('forward')"
           >Next Page<v-icon>arrow_forward</v-icon></v-btn>
-          <span v-text="(startIndex+1) + '-' + (startIndex+cards.length)"></span>
+          <v-flex></v-flex>
         </v-layout>
       </v-container>
 

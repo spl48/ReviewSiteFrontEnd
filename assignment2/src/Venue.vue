@@ -13,7 +13,7 @@
         <v-card style="text-align:center;">
           <v-card-text>
             <v-avatar color="accent" size="100px">
-              <v-img :src="getProfilePic(clickedOnUserId)" v-on:error="imgError"></v-img>
+              <v-img :src="getProfilePic(clickedOnUserId)"></v-img>
             </v-avatar>
           </v-card-text>
           <v-card-text
@@ -344,7 +344,7 @@
         description: null,
         makePrimary: false,
         primaryPopUp: false,
-        imgError: false,
+        imgErr: false,
         clickedOnUserId: null
       }
     },
@@ -494,10 +494,7 @@
         }
       },
       getProfilePic: function (userId) {
-        if (!this.imgErr) {
-          return "http://localhost:4941/api/v1/users/" + userId + "/photo"
-        }
-        return require('./assets/defaultProfilePic.png');
+        return "http://localhost:4941/api/v1/users/" + userId + "/photo"
       }
     }
   }
