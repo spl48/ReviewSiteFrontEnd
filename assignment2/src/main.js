@@ -7,6 +7,7 @@ import Venue from './Venue'
 import App from './App.vue'
 import EditUser from './EditUser'
 import AddVenue from './AddVenue'
+import EditVenue from './EditVenue'
 import Vuetify from 'vuetify'
 Vue.use(Vuetify, {
   theme: {
@@ -45,6 +46,10 @@ const routes = [
     component: Venues
   },
   {
+    path: "/users/:id/venues",
+    component: Venues
+  },
+  {
     path: "/edit-user",
     component: EditUser
   },
@@ -55,6 +60,10 @@ const routes = [
   {
     path: "/add-venue",
     component: AddVenue
+  },
+  {
+    path: "/edit-venue/:id",
+    component: EditVenue
   }
 ];
 

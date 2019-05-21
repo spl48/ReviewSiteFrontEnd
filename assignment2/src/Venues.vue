@@ -1,6 +1,38 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <div id="venues">
     <v-app id="inspire">
+      <v-dialog
+        v-model="dialog"
+        persistent
+        width="250"
+      >
+        <v-card>
+          <v-card-title
+            class="headline red lighten-2"
+            primary-title
+          >
+            Unauthorized
+          </v-card-title>
+
+          <v-card-text>
+            Can't view other user's venues
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              flat
+              @click="dialog = false"
+            >
+              Back to Home Page
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <v-container fluid grid-list-xl>
         <v-layout justify-space-between row>
             <v-navigation-drawer permanent>
@@ -207,16 +239,6 @@
             <!--</template>-->
           <!--</v-data-iterator>-->
           <v-flex xs2>
-            <v-btn
-              absolute
-              fab
-              centre
-              hover
-              color="accent"
-              to="/add-venue"
-            >
-              <v-icon>add</v-icon>
-            </v-btn>
           </v-flex>
         </v-layout>
         <v-layout justify-start align-centre>
@@ -261,7 +283,9 @@
         myLongitude: null,
         firstPage: true,
         lastPage: false,
-        totalNumVenues: null
+        totalNumVenues: null,
+        userId: sessionStorage.getItem("userId"),
+        dialog: false
       }
     },
     mounted: function () {
@@ -272,11 +296,17 @@
       getAllVenues: function (response) {
         this.totalNumVenues = response.data.length;
         for (var i = 0; i<response.data.length; i++) {
-          this.cities.push(response.data[i]['city']);
+          this.cities.push(response.data[i]['city'].toLowerCase().split(' ').map((s) => s.charAt(0).toUpperCase() + s.substring(1)).join(' '));
           this.cities.sort();
         }
       },
       getVenues: function () {
+        if (this.$route.params.id != null && this.$route.params.id == this.userId) {
+          this.adminId = this.$route.params.id;
+        } else if (this.$route.params.id != null && this.$route.params.id != this.userId) {
+          this.dialog = true;
+          this.$router.push('/venues');
+        }
         this.$http.get('http://localhost:4941/api/v1/venues' + this.filter())
           .then(function (response) {
             this.getAllVenues(response);

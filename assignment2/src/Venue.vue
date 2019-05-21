@@ -78,7 +78,7 @@
               </v-card-text>
 
               <v-card-actions>
-                <v-btn color="accent" v-show="isAdmin">Edit</v-btn>
+                <v-btn color="accent" v-show="isAdmin" :to="'/edit-venue/' + venueId">Edit</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -122,7 +122,7 @@
                   >
                     <v-card>
                       <v-card-text>
-                        <h1 style="text-align:center;">
+                        <h1 colo style="text-align:center;">
                           {{ props.item.reviewAuthor.username }}
                         </h1>
                       </v-card-text>

@@ -5,7 +5,13 @@
         <v-spacer></v-spacer>
         <v-toolbar-items>
 
-          <!--<v-btn  v-text="loginout" v-on:click="loginOrOut" flat></v-btn>-->
+          <template v-if="user['userId'] != null">
+            <v-btn flat color="secondary" :to="'/users/' + user['userId'] + '/venues'" @click="reload">View My Venues</v-btn>
+          </template>
+
+          <template v-if="user['userId'] != null">
+            <v-btn flat color="secondary" to="/add-venue">Add Venue</v-btn>
+          </template>
           <!--<UserDetails></UserDetails>-->
 
 
@@ -94,7 +100,7 @@
       loginOrOut: function () {
         let authTok = sessionStorage.getItem("authTok");
         if (authTok !== null) {
-          this.$http.post("http://localhost:4941/api/v1/users/logout", {headers: {"X-Authorization": authTok}})
+          this.$http.post("http://localhost:4941/api/v1/users/logout", {}, {headers: {"X-Authorization": authTok}})
             .then(function(response) {
               sessionStorage.removeItem("authTok");
               sessionStorage.removeItem("userId");
@@ -103,8 +109,6 @@
               this.errorFlag = true;
             });
           this.loginout = "Login";
-          sessionStorage.removeItem("authTok");
-          sessionStorage.removeItem("userId");
           document.location.reload();
         } else {
           this.$router.push('/login');
@@ -137,6 +141,10 @@
       },
       toVenues: function () {
         this.$router.push("/venues");
+        document.location.reload();
+      },
+      reload: function () {
+        document.location.reload();
       }
     }
   };
