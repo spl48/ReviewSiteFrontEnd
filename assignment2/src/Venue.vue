@@ -39,7 +39,7 @@
 
       <v-dialog v-model="upload" width="400px">
         <v-card>
-          <v-card-text class="subheading">
+          <v-card-text style="text-align:center; color:#f3884a; font-size:20px;">
             Upload a Photo For Your Venue
           </v-card-text>
           <v-divider></v-divider>
@@ -51,9 +51,65 @@
           <v-card-actions>
               <input type="file" id="file" ref="file" v-on:change="handleFileUpload()">
 
-            <v-btn :disabled="!valid2 || file == '' || file == null" color="blue darken-1" v-on:click="submitFile()">Upload Photo</v-btn>
+            <v-btn :disabled="!valid2 || file == '' || file == null" color="primary" v-on:click="submitFile()">Upload Photo</v-btn>
           </v-card-actions>
           </v-form>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="deletePopUp" width="600px">
+        <v-card>
+          <v-card-text style="text-align:center; color:#f3884a; font-size:40px;">
+            Click a photo to delete
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-text>
+            <v-flex
+              v-for="photo in photos"
+              :key="photo.photoFilename"
+              v-bind="{ [`xs24`]: true }"
+            >
+              <v-hover>
+                <v-card  style="cursor: pointer" slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`" class="mx-auto" @click="deletePhoto(photo.photoFilename)">
+                  <v-img
+                    :src="'http://localhost:4941/api/v1/venues/' + venueId + '/photos/' + photo.photoFilename"
+                    height="200px"
+                    contain
+                  >
+                  </v-img>
+                </v-card>
+              </v-hover>
+            </v-flex>
+          </v-card-text>
+          <v-divider></v-divider>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="primaryPopUp" width="600px">
+        <v-card>
+          <v-card-text style="text-align:center; color:#f3884a; font-size:40px;">
+            Click a photo to make primary
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-text>
+            <v-flex
+              v-for="photo in photos"
+              :key="photo.photoFilename"
+              v-bind="{ [`xs24`]: true }"
+            >
+              <v-hover>
+                <v-card  style="cursor: pointer" slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`" class="mx-auto" @click="makePrimaryPhoto(photo.photoFilename)">
+                  <v-img
+                    :src="'http://localhost:4941/api/v1/venues/' + venueId + '/photos/' + photo.photoFilename"
+                    height="200px"
+                    contain
+                  >
+                  </v-img>
+                </v-card>
+              </v-hover>
+            </v-flex>
+          </v-card-text>
+          <v-divider></v-divider>
         </v-card>
       </v-dialog>
 
@@ -150,6 +206,8 @@
               <v-card-actions>
                 <v-btn color="accent" v-show="isAdmin" :to="'/edit-venue/' + venueId">Edit</v-btn>
                 <v-btn color="accent" v-show="isAdmin" v-on:click="upload = true">Upload Photo</v-btn>
+                <v-btn color="accent" v-show="isAdmin && photos.length > 0" v-on:click="deletePopUp = true">Delete a Photo</v-btn>
+                <v-btn color="accent" v-show="isAdmin && photos.length > 0" v-on:click="primaryPopUp = true">Change Primary Photo</v-btn>
 
               </v-card-actions>
             </v-card>
@@ -270,6 +328,7 @@
         },
         valid: false,
         valid2: false,
+        deletePopUp: false,
         requiredRule: [
           v => !!v || 'Required',
         ],
@@ -278,7 +337,8 @@
         file: '',
         upload: false,
         description: null,
-        makePrimary: false
+        makePrimary: false,
+        primaryPopUp: false
       }
     },
     mounted: function() {
@@ -371,11 +431,49 @@
         formData.append('photo', this.file);
         formData.append('description', this.description);
         formData.append('makePrimary', this.makePrimary);
-        this.$http.post( 'http://localhost:4941/api/v1/venues/' + this.venueId + '/photos',
-          formData,
+        console.log(this.file.size);
+        if (this.file.size <= 20000000) {
+          this.$http.post( 'http://localhost:4941/api/v1/venues/' + this.venueId + '/photos',
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                "X-Authorization": authTok
+              }
+            }
+          ).then(function(response){
+            document.location.reload();
+          }), function (error) {
+            console.log(error);
+            this.error = error;
+            this.errorFlag = true;
+          }
+        } else {
+          alert("File size too big")
+        }
+
+      },
+      deletePhoto: function (filename) {
+        let authTok = sessionStorage.getItem("authTok");
+        this.$http.delete( 'http://localhost:4941/api/v1/venues/' + this.venueId + '/photos/' + filename,
           {
             headers: {
-              'Content-Type': 'multipart/form-data',
+              "X-Authorization": authTok
+            }
+          }
+        ).then(function(response){
+          document.location.reload();
+        }), function (error) {
+          console.log(error);
+          this.error = error;
+          this.errorFlag = true;
+        }
+      },
+      makePrimaryPhoto: function (filename) {
+        let authTok = sessionStorage.getItem("authTok");
+        this.$http.post( 'http://localhost:4941/api/v1/venues/' + this.venueId + '/photos/' + filename + '/setPrimary', {},
+          {
+            headers: {
               "X-Authorization": authTok
             }
           }
